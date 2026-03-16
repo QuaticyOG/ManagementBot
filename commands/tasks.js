@@ -31,7 +31,17 @@ module.exports = {
         .setDescription('List tasks for a user')
         .addUserOption((option) => option.setName('target').setDescription('User to inspect').setRequired(true)),
     )
-    .addSubcommand((subcommand) => subcommand.setName('archived').setDescription('List completed tasks')),
+    .addSubcommand((subcommand) =>
+      subcommand
+        .setName('archived')
+        .setDescription('List archived tasks')
+        .addIntegerOption(option =>
+          option
+            .setName('tasknumber')
+            .setDescription('View a specific archived task')
+            .setRequired(false)
+        )
+    ),
 
   async execute(interaction) {
     const subcommand = interaction.options.getSubcommand();
