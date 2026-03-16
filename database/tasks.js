@@ -1,13 +1,38 @@
 const db = require('./db');
 
-async function createTask({ title, description, department, assignedUserId }) {
+async function createTask({
+  title,
+  description,
+  department,
+  assignedUserId,
+  priority,
+  deadline
+}) {
+
   const result = await db.query(
     `
-      INSERT INTO tasks (title, description, department, assigned_user_id, status, created_at)
-      VALUES ($1, $2, $3, $4, 'todo', NOW())
+      INSERT INTO tasks
+      (
+        title,
+        description,
+        department,
+        assigned_user_id,
+        priority,
+        deadline,
+        status,
+        created_at
+      )
+      VALUES ($1,$2,$3,$4,$5,$6,'todo',NOW())
       RETURNING *;
     `,
-    [title, description, department, assignedUserId],
+    [
+      title,
+      description,
+      department,
+      assignedUserId,
+      priority,
+      deadline
+    ],
   );
 
   return result.rows[0];
@@ -19,7 +44,7 @@ async function getTaskById(taskId) {
 }
 
 async function updateTaskAssignee(taskId, userId) {
-  const result = await query(
+  const result = await db.query(
     `
     UPDATE tasks
     SET assigned_user_id = $1
