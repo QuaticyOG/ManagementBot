@@ -1,8 +1,19 @@
 const { Events } = require('discord.js');
-const { createTask, getTaskById, updateTaskStatus, updateTaskAssignee } = require('../database/tasks');
+const {
+  createTask,
+  getTaskById,
+  updateTaskStatus,
+  updateTaskAssignee,
+} = require('../database/tasks');
+
 const { updateDashboard } = require('../utils/dashboard');
 const { getDepartmentChannelId } = require('../utils/channelRouter');
-const { buildInfoEmbed, buildTaskDetailsEmbed, buildTaskEmbed } = require('../utils/embeds');
+const {
+  buildInfoEmbed,
+  buildTaskDetailsEmbed,
+  buildTaskEmbed,
+} = require('../utils/embeds');
+
 const { buildTaskButtons } = require('../utils/components');
 const { canCreateTasks, canViewDepartment } = require('../utils/permissions');
 
@@ -17,9 +28,12 @@ module.exports = {
 
       if (interaction.isChatInputCommand()) {
 
-        // Handle /task assign
-        if (interaction.commandName === 'task' && interaction.options.getSubcommand() === 'assign') {
+        /* ---- /task assign ---- */
 
+        if (
+          interaction.commandName === 'task' &&
+          interaction.options.getSubcommand() === 'assign'
+        ) {
           const taskId = interaction.options.getInteger('task_id');
           const user = interaction.options.getUser('user');
 
@@ -27,14 +41,26 @@ module.exports = {
 
           if (!task) {
             return interaction.reply({
-              embeds: [buildInfoEmbed('Task not found', 'No task with that ID exists.', 0xed4245)],
+              embeds: [
+                buildInfoEmbed(
+                  'Task not found',
+                  'No task with that ID exists.',
+                  0xed4245
+                ),
+              ],
               ephemeral: true,
             });
           }
 
           if (!canViewDepartment(interaction.member, task.department)) {
             return interaction.reply({
-              embeds: [buildInfoEmbed('Access denied', 'You cannot modify this task.', 0xed4245)],
+              embeds: [
+                buildInfoEmbed(
+                  'Access denied',
+                  'You cannot modify this task.',
+                  0xed4245
+                ),
+              ],
               ephemeral: true,
             });
           }
@@ -56,8 +82,10 @@ module.exports = {
           return;
         }
 
-        // Run other commands normally
+        /* ---- other slash commands ---- */
+
         const command = client.commands.get(interaction.commandName);
+
         if (command) {
           await command.execute(interaction, client);
         }
@@ -69,51 +97,85 @@ module.exports = {
          MODAL SUBMIT (TASK CREATE)
       ========================= */
 
-      if (interaction.isModalSubmit() && interaction.customId === 'task_create_modal') {
-
+      if (
+        interaction.isModalSubmit() &&
+        interaction.customId === 'task_create_modal'
+      ) {
         if (!canCreateTasks(interaction.member)) {
           return interaction.reply({
-            embeds: [buildInfoEmbed('Access denied', 'You do not have permission to create tasks.', 0xed4245)],
+            embeds: [
+              buildInfoEmbed(
+                'Access denied',
+                'You do not have permission to create tasks.',
+                0xed4245
+              ),
+            ],
             ephemeral: true,
           });
         }
 
         const title = interaction.fields.getTextInputValue('title').trim();
-        const description = interaction.fields.getTextInputValue('description').trim();
+        const description = interaction.fields
+          .getTextInputValue('description')
+          .trim();
 
-        let priorityInput =
-          interaction.fields.getTextInputValue('task_priority')?.trim().toLowerCase() || '';
+        /* ---- PRIORITY ---- */
+
+        let priorityInput = '';
+
+        try {
+          priorityInput = interaction.fields
+            .getTextInputValue('task_priority')
+            .trim()
+            .toLowerCase();
+        } catch {
+          priorityInput = '';
+        }
 
         let priority = 'medium';
 
-        if (priorityInput.startsWith('h')) priority = 'high';
-        if (priorityInput.startsWith('l')) priority = 'low';
+        if (priorityInput === 'high') priority = 'high';
+        else if (priorityInput === 'low') priority = 'low';
 
-const deadlineInput =
-  interaction.fields.getTextInputValue('task_deadline')?.trim() || null;
+        /* ---- DEADLINE ---- */
 
-let deadline = null;
+        let deadline = null;
 
-if (deadlineInput) {
-  const parsed = new Date(deadlineInput);
+        let deadlineInput = '';
 
-  if (isNaN(parsed.getTime())) {
-    return interaction.reply({
-      embeds: [
-        buildInfoEmbed(
-          'Invalid deadline',
-          'Deadline must be formatted as **YYYY-MM-DD**.',
-          0xed4245
-        ),
-      ],
-      ephemeral: true,
-    });
-  }
+        try {
+          deadlineInput = interaction.fields
+            .getTextInputValue('task_deadline')
+            .trim();
+        } catch {
+          deadlineInput = '';
+        }
 
-  deadline = parsed;
-}
+        if (deadlineInput) {
+          const parsed = new Date(deadlineInput);
 
-        const department = interaction.fields.getStringSelectValues('department')[0];
+          if (isNaN(parsed.getTime())) {
+            return interaction.reply({
+              embeds: [
+                buildInfoEmbed(
+                  'Invalid deadline',
+                  'Deadline must be formatted as **YYYY-MM-DD**.',
+                  0xed4245
+                ),
+              ],
+              ephemeral: true,
+            });
+          }
+
+          deadline = parsed;
+        }
+
+        /* ---- DEPARTMENT ---- */
+
+        const department =
+          interaction.fields.getStringSelectValues('department')[0];
+
+        /* ---- CREATE TASK ---- */
 
         const task = await createTask({
           title,
@@ -128,7 +190,9 @@ if (deadlineInput) {
         const targetChannel = await client.channels.fetch(targetChannelId);
 
         if (!targetChannel?.isTextBased()) {
-          throw new Error(`Task channel for ${department} is not text-based.`);
+          throw new Error(
+            `Task channel for ${department} is not text-based.`
+          );
         }
 
         await targetChannel.send({
@@ -154,24 +218,39 @@ if (deadlineInput) {
       ========================= */
 
       if (interaction.isButton()) {
-
         const [action, taskIdRaw] = interaction.customId.split(':');
         const taskId = Number(taskIdRaw);
 
-        if (!taskId || !['task_start', 'task_complete', 'task_view'].includes(action)) return;
+        if (
+          !taskId ||
+          !['task_start', 'task_complete', 'task_view'].includes(action)
+        )
+          return;
 
         const task = await getTaskById(taskId);
 
         if (!task) {
           return interaction.reply({
-            embeds: [buildInfoEmbed('Task not found', 'This task no longer exists.', 0xed4245)],
+            embeds: [
+              buildInfoEmbed(
+                'Task not found',
+                'This task no longer exists.',
+                0xed4245
+              ),
+            ],
             ephemeral: true,
           });
         }
 
         if (!canViewDepartment(interaction.member, task.department)) {
           return interaction.reply({
-            embeds: [buildInfoEmbed('Access denied', 'You do not have access to this task.', 0xed4245)],
+            embeds: [
+              buildInfoEmbed(
+                'Access denied',
+                'You do not have access to this task.',
+                0xed4245
+              ),
+            ],
             ephemeral: true,
           });
         }
@@ -199,15 +278,19 @@ if (deadlineInput) {
         });
 
         await updateDashboard(client);
-        return;
       }
 
     } catch (error) {
-
       console.error('Interaction handling error:', error);
 
       const payload = {
-        embeds: [buildInfoEmbed('Error', 'Something went wrong while processing that interaction.', 0xed4245)],
+        embeds: [
+          buildInfoEmbed(
+            'Error',
+            'Something went wrong while processing that interaction.',
+            0xed4245
+          ),
+        ],
         ephemeral: true,
       };
 
@@ -216,7 +299,6 @@ if (deadlineInput) {
       } else {
         await interaction.reply(payload).catch(() => null);
       }
-
     }
   },
 };
