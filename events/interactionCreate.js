@@ -81,12 +81,13 @@ module.exports = {
         const title = interaction.fields.getTextInputValue('title').trim();
         const description = interaction.fields.getTextInputValue('description').trim();
 
-        let priority =
-          interaction.fields.getTextInputValue('task_priority')?.trim().toLowerCase() || 'medium';
+        let priorityInput =
+          interaction.fields.getTextInputValue('task_priority')?.trim().toLowerCase() || '';
 
-        if (priority.includes('high')) priority = 'high';
-        else if (priority.includes('low')) priority = 'low';
-        else priority = 'medium';
+        let priority = 'medium';
+
+        if (priorityInput.startsWith('h')) priority = 'high';
+        if (priorityInput.startsWith('l')) priority = 'low';
 
         const deadlineInput =
           interaction.fields.getTextInputValue('task_deadline')?.trim() || null;
