@@ -89,29 +89,29 @@ module.exports = {
         if (priorityInput.startsWith('h')) priority = 'high';
         if (priorityInput.startsWith('l')) priority = 'low';
 
-        const deadlineInput =
-          interaction.fields.getTextInputValue('task_deadline')?.trim() || null;
+const deadlineInput =
+  interaction.fields.getTextInputValue('task_deadline')?.trim() || null;
 
-        let deadline = null;
+let deadline = null;
 
-        if (deadlineInput) {
-          const parsed = new Date(deadlineInput);
+if (deadlineInput) {
+  const parsed = new Date(deadlineInput);
 
-          if (isNaN(parsed.getTime())) {
-            return interaction.reply({
-              embeds: [
-                buildInfoEmbed(
-                  'Invalid deadline',
-                  'Deadline must be formatted as **YYYY-MM-DD**.',
-                  0xed4245
-                ),
-              ],
-              ephemeral: true,
-            });
-          }
+  if (isNaN(parsed.getTime())) {
+    return interaction.reply({
+      embeds: [
+        buildInfoEmbed(
+          'Invalid deadline',
+          'Deadline must be formatted as **YYYY-MM-DD**.',
+          0xed4245
+        ),
+      ],
+      ephemeral: true,
+    });
+  }
 
-          deadline = parsed;
-        }
+  deadline = parsed;
+}
 
         const department = interaction.fields.getStringSelectValues('department')[0];
 
