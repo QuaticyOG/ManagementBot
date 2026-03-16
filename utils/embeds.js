@@ -38,10 +38,13 @@ function buildTaskEmbed(task) {
       { name: 'Department', value: department.label, inline: true },
       { name: 'Priority', value: formatPriority(task.priority), inline: true },
       { name: 'Status', value: TASK_STATUSES[task.status] ?? task.status, inline: true },
+
       { name: 'Assigned To', value: formatAssigned(task.assigned_user_id), inline: true },
       { name: 'Deadline', value: formatTimestamp(task.deadline), inline: true },
+      { name: '\u200B', value: '\u200B', inline: true },
+
       { name: 'Description', value: task.description }
-    )
+)
     .setFooter({ text: `Task ID: ${task.id}` })
     .setTimestamp(new Date(task.created_at));
 }
