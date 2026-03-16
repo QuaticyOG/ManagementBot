@@ -2,8 +2,13 @@ const { EmbedBuilder } = require('discord.js');
 const { DEPARTMENTS, TASK_STATUSES } = require('../config/departments');
 
 function formatTimestamp(value) {
-  if (!value) return '—';
-  return `<t:${Math.floor(new Date(value).getTime() / 1000)}:f>`;
+  if (!value) return 'None';
+
+  const date = new Date(value);
+
+  if (isNaN(date.getTime())) return 'None';
+
+  return `<t:${Math.floor(date.getTime() / 1000)}:f>`;
 }
 
 function formatPriority(priority) {
