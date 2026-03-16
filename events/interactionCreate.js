@@ -206,10 +206,31 @@ module.exports = {
 
         let sourceDepartment = 'unknown';
 
-        if (memberRoles.some(r => r.name === 'Frontend')) sourceDepartment = 'frontend';
-        else if (memberRoles.some(r => r.name === 'Backend')) sourceDepartment = 'backend';
-        else if (memberRoles.some(r => r.name === 'Design')) sourceDepartment = 'design';
-        else if (memberRoles.some(r => r.name === 'Marketing')) sourceDepartment = 'marketing';
+        /* MANAGEMENT ROLES */
+
+        if (
+          memberRoles.some(r =>
+            ['Admin', 'Owner', 'Project Manager'].includes(r.name) ||
+            r.name.toLowerCase().startsWith('head of')
+          )
+        ) {
+          sourceDepartment = 'management';
+        }
+
+/* NORMAL DEPARTMENTS */
+
+else if (memberRoles.some(r => r.name === 'Frontend')) {
+  sourceDepartment = 'frontend';
+}
+else if (memberRoles.some(r => r.name === 'Backend')) {
+  sourceDepartment = 'backend';
+}
+else if (memberRoles.some(r => r.name === 'Design')) {
+  sourceDepartment = 'design';
+}
+else if (memberRoles.some(r => r.name === 'Marketing')) {
+  sourceDepartment = 'marketing';
+}
 
         /* ---- CREATE TASK ---- */
 
