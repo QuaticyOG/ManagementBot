@@ -9,6 +9,22 @@ module.exports = {
 
   async execute(interaction, client) {
 
+    // Permission check
+    if (!interaction.member.roles.cache.some(r =>
+      ['Admin', 'Project Manager'].includes(r.name)
+    )) {
+      return interaction.reply({
+        embeds: [
+          buildInfoEmbed(
+            'Access denied',
+            'Only **Admins** or **Project Managers** can reset the dashboard.',
+            0xed4245
+          ),
+        ],
+        ephemeral: true,
+      });
+    }
+
     await updateDashboard(client);
 
     await interaction.reply({
