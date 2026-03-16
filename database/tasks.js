@@ -4,6 +4,7 @@ async function createTask({
   title,
   description,
   department,
+  sourceDepartment,
   assignedUserId,
   priority,
   deadline
@@ -16,23 +17,25 @@ async function createTask({
         title,
         description,
         department,
+        source_department,
         assigned_user_id,
         priority,
         deadline,
         status,
         created_at
       )
-      VALUES ($1,$2,$3,$4,$5,$6,'todo',NOW())
+      VALUES ($1,$2,$3,$4,$5,$6,$7,'todo',NOW())
       RETURNING *;
     `,
     [
       title,
       description,
       department,
+      sourceDepartment,
       assignedUserId,
       priority,
       deadline
-    ],
+    ]
   );
 
   return result.rows[0];
