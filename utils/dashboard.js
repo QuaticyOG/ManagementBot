@@ -19,7 +19,7 @@ function buildDashboardEmbed(summaryRows, topContributors) {
     : 'No completed tasks yet.';
 
   return new EmbedBuilder()
-    .setColor(0x57f287)
+    .setColor(0x5865f2)
     .setTitle('Project Dashboard')
     .addFields(
       { name: 'Department Progress', value: departmentLines.join('\n\n') },
