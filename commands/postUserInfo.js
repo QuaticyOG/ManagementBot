@@ -55,21 +55,6 @@ value:
 5️⃣ When finished, the developer clicks **Complete Task**  
 6️⃣ Completed tasks are stored in the archive`,
 inline:false
-},
-
-{
-name:"📊 Dashboard",
-value:
-`The dashboard shows:
-
-• Todo tasks  
-• In progress tasks  
-• Completed tasks  
-• Department productivity  
-• Top contributors
-
-Management uses this to track team progress.`,
-inline:false
 }
 
 );
