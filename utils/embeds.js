@@ -35,14 +35,12 @@ function buildTaskEmbed(task) {
     .setColor(department.color)
     .setTitle(`Task #${task.id} — ${task.title}`)
     .addFields(
-      .addFields(
-  { name: 'Department', value: department.label, inline: true },
-  {
-    name: 'From',
-    value: DEPARTMENTS[task.source_department]?.label ?? task.source_department ?? 'Unknown',
-    inline: true
-  },
-  { name: 'Priority', value: formatPriority(task.priority), inline: true },
+      { name: 'Department', value: department.label, inline: true },
+      {
+        name: 'From',
+        value: DEPARTMENTS[task.source_department]?.label ?? task.source_department ?? 'Unknown',
+        inline: true
+      },
       { name: 'Priority', value: formatPriority(task.priority), inline: true },
       { name: 'Status', value: TASK_STATUSES[task.status] ?? task.status, inline: true },
 
@@ -51,7 +49,7 @@ function buildTaskEmbed(task) {
       { name: '\u200B', value: '\u200B', inline: true },
 
       { name: 'Description', value: task.description }
-)
+    )
     .setFooter({ text: `Task ID: ${task.id}` })
     .setTimestamp(new Date(task.created_at));
 }
@@ -65,6 +63,11 @@ function buildTaskDetailsEmbed(task) {
     .setDescription(task.description)
     .addFields(
       { name: 'Department', value: department.label, inline: true },
+      {
+        name: 'From',
+        value: DEPARTMENTS[task.source_department]?.label ?? task.source_department ?? 'Unknown',
+        inline: true
+      },
       { name: 'Priority', value: formatPriority(task.priority), inline: true },
       { name: 'Status', value: TASK_STATUSES[task.status] ?? task.status, inline: true },
       { name: 'Assigned To', value: formatAssigned(task.assigned_user_id), inline: true },
