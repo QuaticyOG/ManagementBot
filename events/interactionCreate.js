@@ -65,8 +65,28 @@ module.exports = {
             });
           }
 
-          await updateTaskAssignee(taskId, user.id);
+          const updatedTask = await updateTaskAssignee(taskId, user.id);
 
+          const channelId = getDepartmentChannelId(updatedTask.department);
+const channel = await client.channels.fetch(channelId);
+
+if (channel?.isTextBased()) {
+
+  const messages = await channel.messages.fetch({ limit: 50 });
+
+  const taskMessage = messages.find(m =>
+    m.embeds.length &&
+    m.embeds[0].footer?.text?.includes(`Task ID: ${taskId}`)
+  );
+
+  if (taskMessage) {
+    await taskMessage.edit({
+      embeds: [buildTaskEmbed(updatedTask)],
+      components: [buildTaskButtons(updatedTask)]
+    });
+  }
+}
+          
           await interaction.reply({
             embeds: [
               buildInfoEmbed(
