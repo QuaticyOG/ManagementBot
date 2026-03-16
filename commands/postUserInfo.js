@@ -48,12 +48,12 @@ inline:false
 {
 name:"⚙️ Task Workflow",
 value:
-`1️⃣ Task is created by staff  
-2️⃣ Developer clicks **Start Task**  
-3️⃣ Task moves to **In Progress**  
-4️⃣ Developer clicks **Complete Task**
-
-This keeps development organized.`,
+`1️⃣ Any team member can create a task using /task create  
+2️⃣ Staff or department heads assign the task if needed  
+3️⃣ The assigned developer clicks **Start Task**  
+4️⃣ The task moves to **In Progress**  
+5️⃣ When finished, the developer clicks **Complete Task**  
+6️⃣ Completed tasks are stored in the archive`,
 inline:false
 },
 
