@@ -1,0 +1,85 @@
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+
+module.exports = {
+
+  data: new SlashCommandBuilder()
+    .setName('postuserinfo')
+    .setDescription('Post the user command guide'),
+
+  async execute(interaction) {
+
+    const embed = new EmbedBuilder()
+      .setTitle("📘 Server Workspace Guide")
+      .setColor(0x5865f2)
+
+      .setDescription(
+`This server uses a **task management system** to organize development work.
+
+Tasks are created, assigned, and tracked through the bot.`
+      )
+
+      .addFields(
+
+{
+name:"📋 Viewing Tasks",
+value:
+`/tasks all
+View all tasks you have permission to see.
+
+ /tasks department
+View tasks from a specific department.
+
+ /tasks user
+View tasks assigned to a specific user.`,
+inline:false
+},
+
+{
+name:"📦 Archived Tasks",
+value:
+`/tasks archived
+View completed tasks.
+
+ /tasks archived tasknumber
+Open a specific archived task.`,
+inline:false
+},
+
+{
+name:"⚙️ Task Workflow",
+value:
+`1️⃣ Task is created by staff  
+2️⃣ Developer clicks **Start Task**  
+3️⃣ Task moves to **In Progress**  
+4️⃣ Developer clicks **Complete Task**
+
+This keeps development organized.`,
+inline:false
+},
+
+{
+name:"📊 Dashboard",
+value:
+`The dashboard shows:
+
+• Todo tasks  
+• In progress tasks  
+• Completed tasks  
+• Department productivity  
+• Top contributors
+
+Management uses this to track team progress.`,
+inline:false
+}
+
+);
+
+    await interaction.channel.send({embeds:[embed]});
+
+    await interaction.reply({
+      content:"User guide posted.",
+      ephemeral:true
+    });
+
+  }
+};
