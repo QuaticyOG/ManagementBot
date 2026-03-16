@@ -11,7 +11,7 @@ async execute(interaction){
 const embed = new EmbedBuilder()
 
 .setTitle("📊 Development Dashboard Guide")
-.setColor(0x57f287)
+.setColor(0x5865f2)
 
 .setDescription(
 `The **Development Dashboard** tracks the progress of all departments and tasks in real time.
