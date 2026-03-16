@@ -90,11 +90,6 @@ function buildCreateTaskModal() {
         .setDescription('Choose the task owner department')
         .setStringSelectMenuComponent(departmentSelect),
 
-      new LabelBuilder()
-        .setLabel('Assigned User')
-        .setDescription('Optional assignee')
-        .setUserSelectMenuComponent(assignedUserSelect)
-
     );
 }
 
