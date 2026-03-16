@@ -84,8 +84,7 @@ module.exports = {
         
         const department = interaction.fields.getStringSelectValues('department')[0];
 
-        const assignedUser =
-          interaction.fields.getSelectedUsers('assigned_user').first() || null;
+        const assignedUser = null;
 
         const task = await createTask({
           title,
