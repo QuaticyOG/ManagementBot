@@ -27,7 +27,7 @@ module.exports = {
     }
 
     // Delete tasks
-    await query(`DELETE FROM tasks`);
+    await query(`TRUNCATE TABLE tasks RESTART IDENTITY CASCADE`);
 
     // Update dashboard
     await updateDashboard(client);
