@@ -11,6 +11,53 @@ module.exports = {
   async execute(interaction, client) {
     try {
       if (interaction.isChatInputCommand()) {
+
+  if (interaction.commandName === 'task' && interaction.options.getSubcommand() === 'assign') {
+
+    const taskId = interaction.options.getInteger('task_id');
+    const user = interaction.options.getUser('user');
+
+    const task = await getTaskById(taskId);
+
+    if (!task) {
+      return interaction.reply({
+        embeds: [buildInfoEmbed('Task not found', 'No task with that ID exists.', 0xed4245)],
+        ephemeral: true,
+      });
+    }
+
+    if (!canViewDepartment(interaction.member, task.department)) {
+      return interaction.reply({
+        embeds: [buildInfoEmbed('Access denied', 'You cannot modify this task.', 0xed4245)],
+        ephemeral: true,
+      });
+    }
+
+    const updatedTask = await updateTaskAssignee(taskId, user.id);
+
+    await interaction.reply({
+      embeds: [
+        buildInfoEmbed(
+          'Task Updated',
+          `Task **#${taskId}** is now assigned to ${user}.`,
+          0x57f287
+        ),
+      ],
+      ephemeral: true,
+    });
+
+    await updateDashboard(client);
+
+    return;
+  }
+
+  const command = client.commands.get(interaction.commandName);
+  if (command) {
+    await command.execute(interaction, client);
+  }
+
+  return;
+}
         const command = client.commands.get(interaction.commandName);
         if (command) {
           await command.execute(interaction, client);
