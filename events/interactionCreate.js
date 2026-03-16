@@ -28,21 +28,72 @@ module.exports = {
 
         const title = interaction.fields.getTextInputValue('title').trim();
         const description = interaction.fields.getTextInputValue('description').trim();
-        const department = interaction.fields.getStringSelectValues('department')[0];
-        const assignedUser = interaction.fields.getSelectedUsers('assigned_user').first();
 
-        if (!assignedUser) {
+        const priority =
+          interaction.fields.getTextInputValue('task_priority')?.trim().toLowerCase() || 'medium';
+
+        const allowedPriorities = ['low', 'medium', 'high'];
+
+        if (!allowedPriorities.includes(priority)) {
           return interaction.reply({
-            embeds: [buildInfoEmbed('Missing assignee', 'Please choose a user for the task.', 0xed4245)],
+            embeds: [
+              buildInfoEmbed(
+                'Invalid priority',
+                'Priority must be **high**, **medium**, or **low**.',
+                0xed4245
+              ),
+            ],
             ephemeral: true,
           });
         }
+        
+        let deadlineInput =
+          interaction.fields.getTextInputValue('task_deadline')?.trim() || null;
+
+        let deadline = null;
+
+        if (deadlineInput) {
+          const parsed = new Date(deadlineInput);
+          if (isNaN(parsed.getTime())) {
+            return interaction.reply({
+              embeds: [
+                buildInfoEmbed(
+                  'Invalid deadline',
+                  'Deadline must be formatted as **YYYY-MM-DD**.',
+                  0xed4245
+                ),
+              ],
+              ephemeral: true,
+            });
+          }
+          deadline = parsed;
+        }
+
+        if (deadline && isNaN(Date.parse(deadline))) {
+          return interaction.reply({
+        embeds: [
+              buildInfoEmbed(
+                'Invalid deadline',
+                'Deadline must be formatted as **YYYY-MM-DD**.',
+                0xed4245
+              ),
+            ],
+            ephemeral: true,
+          });
+        }
+        
+        const department = interaction.fields.getStringSelectValues('department')[0];
+
+        const assignedUser =
+          interaction.fields.getSelectedUsers('assigned_user').first() || null;
 
         const task = await createTask({
           title,
           description,
           department,
-          assignedUserId: assignedUser.id,
+          assignedUserId: assignedUser?.id || null,
+          priority,
+          deadline,
         });
 
         const targetChannelId = getDepartmentChannelId(department);
@@ -60,7 +111,7 @@ module.exports = {
         await updateDashboard(client);
 
         return interaction.reply({
-          embeds: [buildInfoEmbed('Task created', `Task **#${task.id} — ${task.title}** was created and routed to the ${department} channel.`)],
+          embeds: [buildInfoEmbed('Task created', `Task **#${task.id} — ${task.title}** (${priority.toUpperCase()}) was created and sent to the **${department}** channel.`)],
           ephemeral: true,
         });
       }
