@@ -3,118 +3,87 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 module.exports = {
 
 data: new SlashCommandBuilder()
-.setName('poststaffinfo')
-.setDescription('Post the staff command guide'),
+.setName('postdashboardinfo')
+.setDescription('Post dashboard explanation'),
 
 async execute(interaction){
 
 const embed = new EmbedBuilder()
 
-.setTitle("🛠 Staff Task Management Guide")
-.setColor(0xed4245)
+.setTitle("📊 Development Dashboard Guide")
+.setColor(0x57f287)
 
 .setDescription(
-`Staff and department heads can manage development tasks using the commands below.
+`The **Development Dashboard** tracks the progress of all departments and tasks in real time.
 
-These tools allow you to create, assign, edit, and manage development work across departments.`
+It automatically updates whenever tasks are created, started, assigned, or completed.`
 )
 
 .addFields(
 
 {
-name:"📌 Creating Tasks",
+name:"📌 Todo",
 value:
-`/task create
+`Tasks that have been created but not started yet.
 
-Creates a new task for a department.
-
-Includes:
-• Title
-• Description
-• Department
-• Priority
-• Deadline`,
+These are waiting for a developer or team member to begin work.`,
 inline:false
 },
 
 {
-name:"👤 Assigning Tasks",
+name:"⚙️ In Progress",
 value:
-`/task assign tasknumber user
+`Tasks currently being worked on.
 
-Assign a task to a developer.`,
+Developers mark tasks as **Start Task** when they begin.`,
 inline:false
 },
 
 {
-name:"✏️ Editing Tasks",
+name:"✅ Completed",
 value:
-`/taskedit tasknumber
+`Tasks that have been finished.
 
-Edit the title or description of a task.`,
+Completed tasks move to the archive and can still be viewed using:
+
+/tasks archived`,
 inline:false
 },
 
 {
-name:"📅 Task Deadlines",
+name:"🏢 Department Tracking",
 value:
-`/taskdeadline tasknumber YYYY-MM-DD
+`Each department has its own task counts:
 
-Set or update a task deadline.`,
+• Frontend  
+• Backend  
+• Design  
+• Marketing  
+
+This helps management track workload and progress.`,
 inline:false
 },
 
 {
-name:"⚡ Task Priority",
+name:"🏆 Top Contributors",
 value:
-`/taskpriority tasknumber
+`The dashboard also shows the most active contributors based on completed tasks.
 
-Change task priority.
-
-🔴 High  
-🟡 Medium  
-🟢 Low`,
+This helps highlight productivity across the team.`,
 inline:false
 },
 
 {
-name:"📦 Archived Tasks",
+name:"🔄 Automatic Updates",
 value:
-`/tasks archived
+`The dashboard updates automatically when:
 
-View completed tasks.
+• A task is created
+• A task is assigned
+• A task is started
+• A task is completed
 
- /tasks archived tasknumber
-
-Open the full details of a completed task.`,
-inline:false
-},
-
-{
-name:"📊 Dashboard System",
-value:
-`The dashboard automatically tracks:
-
-• Todo tasks
-• In progress tasks
-• Completed tasks
-• Department productivity
-• Top contributors
-
-The dashboard updates whenever tasks are created, started, or completed.`,
-inline:false
-},
-
-{
-name:"🧹 System Commands",
-value:
-`/resettasks
-
-Deletes all tasks and resets numbering.
-
- /resetdashboard
-
-Rebuilds the dashboard message.`,
+No manual updates are required.`,
 inline:false
 }
 
@@ -123,7 +92,7 @@ inline:false
 await interaction.channel.send({embeds:[embed]});
 
 await interaction.reply({
-content:"Staff guide posted.",
+content:"Dashboard guide posted.",
 ephemeral:true
 });
 
