@@ -35,7 +35,14 @@ function buildTaskEmbed(task) {
     .setColor(department.color)
     .setTitle(`Task #${task.id} — ${task.title}`)
     .addFields(
-      { name: 'Department', value: department.label, inline: true },
+      .addFields(
+  { name: 'Department', value: department.label, inline: true },
+  {
+    name: 'From',
+    value: DEPARTMENTS[task.source_department]?.label ?? task.source_department ?? 'Unknown',
+    inline: true
+  },
+  { name: 'Priority', value: formatPriority(task.priority), inline: true },
       { name: 'Priority', value: formatPriority(task.priority), inline: true },
       { name: 'Status', value: TASK_STATUSES[task.status] ?? task.status, inline: true },
 
