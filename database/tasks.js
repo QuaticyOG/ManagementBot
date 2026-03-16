@@ -18,6 +18,20 @@ async function getTaskById(taskId) {
   return result.rows[0] ?? null;
 }
 
+async function updateTaskAssignee(taskId, userId) {
+  const result = await query(
+    `
+    UPDATE tasks
+    SET assigned_user_id = $1
+    WHERE id = $2
+    RETURNING *
+    `,
+    [userId, taskId]
+  );
+
+  return result.rows[0];
+}
+
 async function updateTaskStatus(taskId, status) {
   const result = await db.query(
     `
@@ -102,4 +116,5 @@ module.exports = {
   listTasks,
   getDepartmentSummary,
   getTopContributors,
+  updateTaskAssignee,
 };
