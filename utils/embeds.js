@@ -5,7 +5,6 @@ function formatTimestamp(value) {
   if (!value) return 'None';
 
   const date = new Date(value);
-
   if (isNaN(date.getTime())) return 'None';
 
   return `<t:${Math.floor(date.getTime() / 1000)}:f>`;
@@ -28,6 +27,14 @@ function formatAssigned(userId) {
   return userId ? `<@${userId}>` : 'Unassigned';
 }
 
+function formatSource(source) {
+  if (!source) return 'Unknown';
+
+  if (source === 'management') return '👔 Management';
+
+  return DEPARTMENTS[source]?.label ?? source;
+}
+
 function buildTaskEmbed(task) {
   const department = DEPARTMENTS[task.department];
 
@@ -36,22 +43,12 @@ function buildTaskEmbed(task) {
     .setTitle(`Task #${task.id} — ${task.title}`)
     .addFields(
       { name: 'Department', value: department.label, inline: true },
-      {
-        name: 'From',
-        value:
-          task.source_department === 'management'
-            ? 'Management'
-            : DEPARTMENTS[task.source_department]?.label ??
-              task.source_department ??
-              'Unknown'
-                inline: true
-              },
+      { name: 'From', value: formatSource(task.source_department), inline: true },
       { name: 'Priority', value: formatPriority(task.priority), inline: true },
-      { name: 'Status', value: TASK_STATUSES[task.status] ?? task.status, inline: true },
 
+      { name: 'Status', value: TASK_STATUSES[task.status] ?? task.status, inline: true },
       { name: 'Assigned To', value: formatAssigned(task.assigned_user_id), inline: true },
       { name: 'Deadline', value: formatTimestamp(task.deadline), inline: true },
-      { name: '\u200B', value: '\u200B', inline: true },
 
       { name: 'Description', value: task.description }
     )
@@ -68,15 +65,13 @@ function buildTaskDetailsEmbed(task) {
     .setDescription(task.description)
     .addFields(
       { name: 'Department', value: department.label, inline: true },
-      {
-        name: 'From',
-        value: DEPARTMENTS[task.source_department]?.label ?? task.source_department ?? 'Unknown',
-        inline: true
-      },
+      { name: 'From', value: formatSource(task.source_department), inline: true },
       { name: 'Priority', value: formatPriority(task.priority), inline: true },
+
       { name: 'Status', value: TASK_STATUSES[task.status] ?? task.status, inline: true },
       { name: 'Assigned To', value: formatAssigned(task.assigned_user_id), inline: true },
       { name: 'Deadline', value: formatTimestamp(task.deadline), inline: true },
+
       { name: 'Created At', value: formatTimestamp(task.created_at), inline: true },
       { name: 'Completed At', value: formatTimestamp(task.completed_at), inline: true }
     )
