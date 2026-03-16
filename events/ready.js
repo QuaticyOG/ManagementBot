@@ -10,6 +10,10 @@ module.exports = {
 
     // Database migrations
     await query(`
+      ALTER TABLE tasks ALTER COLUMN assigned_user_id DROP NOT NULL;
+    `);
+    
+    await query(`
       ALTER TABLE tasks ADD COLUMN IF NOT EXISTS priority TEXT;
     `);
 
