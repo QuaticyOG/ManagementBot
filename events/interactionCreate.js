@@ -34,6 +34,7 @@ module.exports = {
           interaction.commandName === 'task' &&
           interaction.options.getSubcommand() === 'assign'
         ) {
+
           const taskId = interaction.options.getInteger('task_id');
           const user = interaction.options.getUser('user');
 
@@ -67,26 +68,28 @@ module.exports = {
 
           const updatedTask = await updateTaskAssignee(taskId, user.id);
 
+          /* Update the task message embed */
+
           const channelId = getDepartmentChannelId(updatedTask.department);
-const channel = await client.channels.fetch(channelId);
+          const channel = await client.channels.fetch(channelId);
 
-if (channel?.isTextBased()) {
+          if (channel?.isTextBased()) {
 
-  const messages = await channel.messages.fetch({ limit: 50 });
+            const messages = await channel.messages.fetch({ limit: 50 });
 
-  const taskMessage = messages.find(m =>
-    m.embeds.length &&
-    m.embeds[0].footer?.text?.includes(`Task ID: ${taskId}`)
-  );
+            const taskMessage = messages.find(m =>
+              m.embeds.length &&
+              m.embeds[0].footer?.text?.includes(`Task ID: ${taskId}`)
+            );
 
-  if (taskMessage) {
-    await taskMessage.edit({
-      embeds: [buildTaskEmbed(updatedTask)],
-      components: [buildTaskButtons(updatedTask)]
-    });
-  }
-}
-          
+            if (taskMessage) {
+              await taskMessage.edit({
+                embeds: [buildTaskEmbed(updatedTask)],
+                components: [buildTaskButtons(updatedTask)]
+              });
+            }
+          }
+
           await interaction.reply({
             embeds: [
               buildInfoEmbed(
@@ -121,6 +124,7 @@ if (channel?.isTextBased()) {
         interaction.isModalSubmit() &&
         interaction.customId === 'task_create_modal'
       ) {
+
         if (!canCreateTasks(interaction.member)) {
           return interaction.reply({
             embeds: [
@@ -172,6 +176,7 @@ if (channel?.isTextBased()) {
         }
 
         if (deadlineInput) {
+
           const parsed = new Date(deadlineInput);
 
           if (isNaN(parsed.getTime())) {
@@ -190,10 +195,21 @@ if (channel?.isTextBased()) {
           deadline = parsed;
         }
 
-        /* ---- DEPARTMENT ---- */
+        /* ---- TARGET DEPARTMENT ---- */
 
         const department =
           interaction.fields.getStringSelectValues('department')[0];
+
+        /* ---- SOURCE DEPARTMENT (WHO REQUESTED) ---- */
+
+        const memberRoles = interaction.member.roles.cache;
+
+        let sourceDepartment = 'unknown';
+
+        if (memberRoles.some(r => r.name === 'Frontend')) sourceDepartment = 'frontend';
+        else if (memberRoles.some(r => r.name === 'Backend')) sourceDepartment = 'backend';
+        else if (memberRoles.some(r => r.name === 'Design')) sourceDepartment = 'design';
+        else if (memberRoles.some(r => r.name === 'Marketing')) sourceDepartment = 'marketing';
 
         /* ---- CREATE TASK ---- */
 
@@ -201,6 +217,7 @@ if (channel?.isTextBased()) {
           title,
           description,
           department,
+          sourceDepartment,
           assignedUserId: null,
           priority,
           deadline,
@@ -210,9 +227,7 @@ if (channel?.isTextBased()) {
         const targetChannel = await client.channels.fetch(targetChannelId);
 
         if (!targetChannel?.isTextBased()) {
-          throw new Error(
-            `Task channel for ${department} is not text-based.`
-          );
+          throw new Error(`Task channel for ${department} is not text-based.`);
         }
 
         await targetChannel.send({
@@ -238,14 +253,14 @@ if (channel?.isTextBased()) {
       ========================= */
 
       if (interaction.isButton()) {
+
         const [action, taskIdRaw] = interaction.customId.split(':');
         const taskId = Number(taskIdRaw);
 
         if (
           !taskId ||
           !['task_start', 'task_complete', 'task_view'].includes(action)
-        )
-          return;
+        ) return;
 
         const task = await getTaskById(taskId);
 
@@ -301,6 +316,7 @@ if (channel?.isTextBased()) {
       }
 
     } catch (error) {
+
       console.error('Interaction handling error:', error);
 
       const payload = {
