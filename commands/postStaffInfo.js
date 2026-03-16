@@ -11,7 +11,7 @@ async execute(interaction){
 const embed = new EmbedBuilder()
 
 .setTitle("🛠 Staff Task Management Guide")
-.setColor(0xed4245)
+.setColor(0x5865f2)
 
 .setDescription(
 `Staff and department heads can manage development tasks using the commands below.
