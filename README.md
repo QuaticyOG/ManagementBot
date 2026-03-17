@@ -139,3 +139,11 @@ node index.js
 ## Author
 
 Built by [Quaticy](https://www.quaticy.com/Home)
+
+## License & Usage
+
+This software is developed for [**PackyGG**](https://x.com/packygg) by [**Quaticy**](https://www.quaticy.com/Home) and is intended solely for their internal use.
+
+Unauthorized use, reproduction, distribution, or deployment is strictly prohibited.
+
+For licensing or usage inquiries, please contact PackyGG or the developer.
