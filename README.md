@@ -1,6 +1,6 @@
 # Discord Task Management Bot
 
-A Railway-ready Discord task manager for development teams using Node.js, discord.js v14, and PostgreSQL.
+A Railway-ready Discord task manager Bot for PackyGG using Node.js, discord.js v14, and PostgreSQL.
 
 ## Features
 
