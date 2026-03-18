@@ -104,6 +104,11 @@ function buildTaskButtons(task) {
       .setDisabled(task.status !== 'todo'),
 
     new ButtonBuilder()
+      .setCustomId(`task_assign_self:${task.id}`)
+      .setLabel('Assign to Me')
+      .setStyle(ButtonStyle.Secondary),
+
+    new ButtonBuilder()
       .setCustomId(`task_complete:${task.id}`)
       .setLabel('Complete Task')
       .setStyle(ButtonStyle.Success)
