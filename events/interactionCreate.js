@@ -28,8 +28,6 @@ module.exports = {
 
       if (interaction.isChatInputCommand()) {
 
-        /* ---- /task assign ---- */
-
         if (
           interaction.commandName === 'task' &&
           interaction.options.getSubcommand() === 'assign'
@@ -42,39 +40,25 @@ module.exports = {
 
           if (!task) {
             return interaction.reply({
-              embeds: [
-                buildInfoEmbed(
-                  'Task not found',
-                  'No task with that ID exists.',
-                  0xed4245
-                ),
-              ],
+              embeds: [buildInfoEmbed('Task not found', 'No task with that ID exists.', 0xed4245)],
               ephemeral: true,
             });
           }
 
           if (!canViewDepartment(interaction.member, task.department)) {
             return interaction.reply({
-              embeds: [
-                buildInfoEmbed(
-                  'Access denied',
-                  'You cannot modify this task.',
-                  0xed4245
-                ),
-              ],
+              embeds: [buildInfoEmbed('Access denied', 'You cannot modify this task.', 0xed4245)],
               ephemeral: true,
             });
           }
 
           const updatedTask = await updateTaskAssignee(taskId, user.id);
 
-          /* Update the task message embed */
-
+          // update message
           const channelId = getDepartmentChannelId(updatedTask.department);
           const channel = await client.channels.fetch(channelId);
 
           if (channel?.isTextBased()) {
-
             const messages = await channel.messages.fetch({ limit: 50 });
 
             const taskMessage = messages.find(m =>
@@ -85,19 +69,13 @@ module.exports = {
             if (taskMessage) {
               await taskMessage.edit({
                 embeds: [buildTaskEmbed(updatedTask)],
-                components: [buildTaskButtons(updatedTask)]
+                components: [buildTaskButtons(updatedTask)],
               });
             }
           }
 
           await interaction.reply({
-            embeds: [
-              buildInfoEmbed(
-                'Task Updated',
-                `Task **#${taskId}** is now assigned to ${user}.`,
-                0x57f287
-              ),
-            ],
+            embeds: [buildInfoEmbed('Task Updated', `Task **#${taskId}** is now assigned to ${user}.`, 0x57f287)],
             ephemeral: true,
           });
 
@@ -105,89 +83,50 @@ module.exports = {
           return;
         }
 
-        /* ---- other slash commands ---- */
-
         const command = client.commands.get(interaction.commandName);
-
-        if (command) {
-          await command.execute(interaction, client);
-        }
+        if (command) await command.execute(interaction, client);
 
         return;
       }
 
       /* =========================
-         MODAL SUBMIT (TASK CREATE)
+         MODAL SUBMIT
       ========================= */
 
-      if (
-        interaction.isModalSubmit() &&
-        interaction.customId === 'task_create_modal'
-      ) {
+      if (interaction.isModalSubmit() && interaction.customId === 'task_create_modal') {
 
         if (!canCreateTasks(interaction.member)) {
           return interaction.reply({
-            embeds: [
-              buildInfoEmbed(
-                'Access denied',
-                'You do not have permission to create tasks.',
-                0xed4245
-              ),
-            ],
+            embeds: [buildInfoEmbed('Access denied', 'You do not have permission to create tasks.', 0xed4245)],
             ephemeral: true,
           });
         }
 
         const title = interaction.fields.getTextInputValue('title').trim();
-        const description = interaction.fields
-          .getTextInputValue('description')
-          .trim();
-
-        /* ---- PRIORITY ---- */
+        const description = interaction.fields.getTextInputValue('description').trim();
 
         let priorityInput = '';
-
         try {
-          priorityInput = interaction.fields
-            .getTextInputValue('task_priority')
-            .trim()
-            .toLowerCase();
-        } catch {
-          priorityInput = '';
-        }
+          priorityInput = interaction.fields.getTextInputValue('task_priority').trim().toLowerCase();
+        } catch {}
 
         let priority = 'medium';
-
         if (priorityInput === 'high') priority = 'high';
         else if (priorityInput === 'low') priority = 'low';
 
-        /* ---- DEADLINE ---- */
-
         let deadline = null;
-
         let deadlineInput = '';
 
         try {
-          deadlineInput = interaction.fields
-            .getTextInputValue('task_deadline')
-            .trim();
-        } catch {
-          deadlineInput = '';
-        }
+          deadlineInput = interaction.fields.getTextInputValue('task_deadline').trim();
+        } catch {}
 
         if (deadlineInput) {
-
           const parsed = new Date(deadlineInput);
 
           if (isNaN(parsed.getTime())) {
             return interaction.reply({
-              embeds: [
-                buildInfoEmbed(
-                  'Invalid deadline',
-                  'Deadline must be formatted as **YYYY-MM-DD**.',
-                  0xed4245
-                ),
-              ],
+              embeds: [buildInfoEmbed('Invalid deadline', 'Use **YYYY-MM-DD**.', 0xed4245)],
               ephemeral: true,
             });
           }
@@ -195,44 +134,28 @@ module.exports = {
           deadline = parsed;
         }
 
-        /* ---- TARGET DEPARTMENT ---- */
+        const department = interaction.fields.getStringSelectValues('department')[0];
 
-        const department =
-          interaction.fields.getStringSelectValues('department')[0];
-
-        /* ---- SOURCE DEPARTMENT (WHO REQUESTED) ---- */
-
-        const memberRoles = interaction.member.roles.cache;
-
+        // source department
+        const roles = interaction.member.roles.cache;
         let sourceDepartment = 'unknown';
 
-        /* MANAGEMENT ROLES */
-
         if (
-          memberRoles.some(r =>
+          roles.some(r =>
             ['Admin', 'Owner', 'Project Manager'].includes(r.name) ||
             r.name.toLowerCase().startsWith('head of')
           )
         ) {
           sourceDepartment = 'management';
+        } else if (roles.some(r => r.name === 'Frontend')) {
+          sourceDepartment = 'frontend';
+        } else if (roles.some(r => r.name === 'Backend')) {
+          sourceDepartment = 'backend';
+        } else if (roles.some(r => r.name === 'Design')) {
+          sourceDepartment = 'design';
+        } else if (roles.some(r => r.name === 'Marketing')) {
+          sourceDepartment = 'marketing';
         }
-
-/* NORMAL DEPARTMENTS */
-
-else if (memberRoles.some(r => r.name === 'Frontend')) {
-  sourceDepartment = 'frontend';
-}
-else if (memberRoles.some(r => r.name === 'Backend')) {
-  sourceDepartment = 'backend';
-}
-else if (memberRoles.some(r => r.name === 'Design')) {
-  sourceDepartment = 'design';
-}
-else if (memberRoles.some(r => r.name === 'Marketing')) {
-  sourceDepartment = 'marketing';
-}
-
-        /* ---- CREATE TASK ---- */
 
         const task = await createTask({
           title,
@@ -244,14 +167,10 @@ else if (memberRoles.some(r => r.name === 'Marketing')) {
           deadline,
         });
 
-        const targetChannelId = getDepartmentChannelId(department);
-        const targetChannel = await client.channels.fetch(targetChannelId);
+        const channelId = getDepartmentChannelId(department);
+        const channel = await client.channels.fetch(channelId);
 
-        if (!targetChannel?.isTextBased()) {
-          throw new Error(`Task channel for ${department} is not text-based.`);
-        }
-
-        await targetChannel.send({
+        await channel.send({
           embeds: [buildTaskEmbed(task)],
           components: [buildTaskButtons(task)],
         });
@@ -259,18 +178,13 @@ else if (memberRoles.some(r => r.name === 'Marketing')) {
         await updateDashboard(client);
 
         return interaction.reply({
-          embeds: [
-            buildInfoEmbed(
-              'Task created',
-              `Task **#${task.id} — ${task.title}** (${priority.toUpperCase()}) was created and sent to the **${department}** channel.`
-            ),
-          ],
+          embeds: [buildInfoEmbed('Task created', `Task **#${task.id} — ${task.title}** created.`)],
           ephemeral: true,
         });
       }
 
       /* =========================
-         BUTTON INTERACTIONS
+         BUTTONS
       ========================= */
 
       if (interaction.isButton()) {
@@ -278,35 +192,25 @@ else if (memberRoles.some(r => r.name === 'Marketing')) {
         const [action, taskIdRaw] = interaction.customId.split(':');
         const taskId = Number(taskIdRaw);
 
-        if (
-          !taskId ||
-          !['task_start', 'task_complete', 'task_view'].includes(action)
-        ) return;
+        if (!taskId || ![
+          'task_start',
+          'task_complete',
+          'task_view',
+          'task_assign_self'
+        ].includes(action)) return;
 
         const task = await getTaskById(taskId);
 
         if (!task) {
           return interaction.reply({
-            embeds: [
-              buildInfoEmbed(
-                'Task not found',
-                'This task no longer exists.',
-                0xed4245
-              ),
-            ],
+            embeds: [buildInfoEmbed('Task not found', 'This task no longer exists.', 0xed4245)],
             ephemeral: true,
           });
         }
 
         if (!canViewDepartment(interaction.member, task.department)) {
           return interaction.reply({
-            embeds: [
-              buildInfoEmbed(
-                'Access denied',
-                'You do not have access to this task.',
-                0xed4245
-              ),
-            ],
+            embeds: [buildInfoEmbed('Access denied', 'You cannot access this task.', 0xed4245)],
             ephemeral: true,
           });
         }
@@ -316,6 +220,27 @@ else if (memberRoles.some(r => r.name === 'Marketing')) {
             embeds: [buildTaskDetailsEmbed(task)],
             ephemeral: true,
           });
+        }
+
+        // ✅ ASSIGN TO SELF
+        if (action === 'task_assign_self') {
+
+          if (task.assigned_user_id && task.assigned_user_id !== interaction.user.id) {
+            return interaction.reply({
+              embeds: [buildInfoEmbed('Already assigned', 'Task already taken.', 0xed4245)],
+              ephemeral: true,
+            });
+          }
+
+          const updatedTask = await updateTaskAssignee(task.id, interaction.user.id);
+
+          await interaction.update({
+            embeds: [buildTaskEmbed(updatedTask)],
+            components: [buildTaskButtons(updatedTask)],
+          });
+
+          await updateDashboard(client);
+          return;
         }
 
         let updatedTask = task;
@@ -337,17 +262,10 @@ else if (memberRoles.some(r => r.name === 'Marketing')) {
       }
 
     } catch (error) {
-
       console.error('Interaction handling error:', error);
 
       const payload = {
-        embeds: [
-          buildInfoEmbed(
-            'Error',
-            'Something went wrong while processing that interaction.',
-            0xed4245
-          ),
-        ],
+        embeds: [buildInfoEmbed('Error', 'Something went wrong.', 0xed4245)],
         ephemeral: true,
       };
 
