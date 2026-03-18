@@ -1,70 +1,74 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
-
   data: new SlashCommandBuilder()
     .setName('postuserinfo')
-    .setDescription('Post the user command guide'),
+    .setDescription('Post user command guide'),
 
   async execute(interaction) {
 
     const embed = new EmbedBuilder()
-      .setTitle("📘 Server Workspace Guide")
       .setColor(0x5865f2)
+      .setTitle('📘 Task System — User Guide')
 
       .setDescription(
-`This server uses a **task management system** to organize development work.
+`Welcome! Here's how to use the task system.
 
-Tasks are created, assigned, and tracked through the bot.`
+You can view, take, and complete tasks assigned to your department.`
       )
 
       .addFields(
 
-{
-name:"📋 Viewing Tasks",
-value:
-`/tasks all
-View all tasks you have permission to see.
+        {
+          name: '📋 Viewing Tasks',
+          value:
+`• \`/tasks all\` — View all tasks you have access to  
+• \`/tasks department\` — View tasks in your department  
+• \`/tasks user\` — View your own tasks`,
+        },
 
- /tasks department
-View tasks from a specific department.
+        {
+          name: '🧠 Working on Tasks',
+          value:
+`• **Assign to Me** — Take a task  
+• **Start Task** — Mark task as in progress  
+• **Complete Task** — Mark task as done  
+• **View Details** — See full task info`,
+        },
 
- /tasks user
-View tasks assigned to a specific user.`,
-inline:false
-},
+        {
+          name: '📦 Archived Tasks',
+          value:
+`• \`/tasks archived\` — View completed tasks  
+• You can also open specific archived tasks`,
+        },
 
-{
-name:"📦 Archived Tasks",
-value:
-`/tasks archived
-View completed tasks.
+        {
+          name: '⚙️ Task Workflow',
+          value:
+`1️⃣ Task is created  
+2️⃣ You click **Assign to Me**  
+3️⃣ Click **Start Task**  
+4️⃣ Click **Complete Task**`,
+        },
 
- /tasks archived tasknumber
-Open a specific archived task.`,
-inline:false
-},
+        {
+          name: '📊 Dashboard',
+          value:
+`The dashboard shows:
+• Department progress  
+• Tasks in each stage  
+• Top contributors  
 
-{
-name:"⚙️ Task Workflow",
-value:
-`1️⃣ Any team member can create a task using /task create  
-2️⃣ Staff or department heads assign the task if needed  
-3️⃣ The assigned developer clicks **Start Task**  
-4️⃣ The task moves to **In Progress**  
-5️⃣ When finished, the developer clicks **Complete Task**  
-6️⃣ Completed tasks are stored in the archive`,
-inline:false
-}
+It updates automatically.`,
+        }
 
-);
+      )
 
-    await interaction.channel.send({embeds:[embed]});
+      .setFooter({ text: 'PackyGG Task System' });
 
     await interaction.reply({
-      content:"User guide posted.",
-      ephemeral:true
+      embeds: [embed],
     });
-
-  }
+  },
 };
