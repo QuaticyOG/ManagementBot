@@ -67,8 +67,13 @@ It updates automatically.`,
 
       .setFooter({ text: 'PackyGG Task System' });
 
-    await interaction.reply({
-      embeds: [embed],
-    });
+await interaction.channel.send({
+  embeds: [embed],
+});
+
+await interaction.reply({
+  content: 'User info posted.',
+  flags: 64
+});
   },
 };
