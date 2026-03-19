@@ -20,7 +20,6 @@ async function createTask({
         source_department,
         assigned_user_id,
         priority,
-        deadline,
         status,
         created_at
       )
