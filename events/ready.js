@@ -25,9 +25,6 @@ module.exports = {
       ALTER TABLE tasks ADD COLUMN IF NOT EXISTS source_department TEXT;
     `);
 
-    await query(`
-      ALTER TABLE tasks ADD COLUMN IF NOT EXISTS deadline TIMESTAMP;
-    `);
 
     /* =========================
        REGISTER COMMANDS
