@@ -114,26 +114,6 @@ module.exports = {
         if (priorityInput === 'high') priority = 'high';
         else if (priorityInput === 'low') priority = 'low';
 
-        let deadline = null;
-        let deadlineInput = '';
-
-        try {
-          deadlineInput = interaction.fields.getTextInputValue('task_deadline').trim();
-        } catch {}
-
-        if (deadlineInput) {
-          const parsed = new Date(deadlineInput);
-
-          if (isNaN(parsed.getTime())) {
-            return interaction.reply({
-              embeds: [buildInfoEmbed('Invalid deadline', 'Use **YYYY-MM-DD**.', 0xed4245)],
-              ephemeral: true,
-            });
-          }
-
-          deadline = parsed;
-        }
-
         const department = interaction.fields.getStringSelectValues('department')[0];
 
         // source department
@@ -164,7 +144,6 @@ module.exports = {
           sourceDepartment,
           assignedUserId: null,
           priority,
-          deadline,
         });
 
         const channelId = getDepartmentChannelId(department);
