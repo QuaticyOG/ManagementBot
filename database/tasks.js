@@ -6,8 +6,7 @@ async function createTask({
   department,
   sourceDepartment,
   assignedUserId,
-  priority,
-  deadline
+  priority
 }) {
 
   const result = await db.query(
