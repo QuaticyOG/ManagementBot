@@ -95,6 +95,8 @@ module.exports = {
 
       if (interaction.isModalSubmit() && interaction.customId === 'task_create_modal') {
 
+        await interaction.deferReply({ flags: 64 });
+        
         if (!canCreateTasks(interaction.member)) {
           return interaction.reply({
             embeds: [buildInfoEmbed('Access denied', 'You do not have permission to create tasks.', 0xed4245)],
