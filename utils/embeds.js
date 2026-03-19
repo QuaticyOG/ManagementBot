@@ -48,7 +48,6 @@ function buildTaskEmbed(task) {
 
       { name: 'Status', value: TASK_STATUSES[task.status] ?? task.status, inline: true },
       { name: 'Assigned To', value: formatAssigned(task.assigned_user_id), inline: true },
-      { name: 'Deadline', value: formatTimestamp(task.deadline), inline: true },
 
       { name: 'Description', value: task.description }
     )
@@ -70,7 +69,6 @@ function buildTaskDetailsEmbed(task) {
 
       { name: 'Status', value: TASK_STATUSES[task.status] ?? task.status, inline: true },
       { name: 'Assigned To', value: formatAssigned(task.assigned_user_id), inline: true },
-      { name: 'Deadline', value: formatTimestamp(task.deadline), inline: true },
 
       { name: 'Created At', value: formatTimestamp(task.created_at), inline: true },
       { name: 'Completed At', value: formatTimestamp(task.completed_at), inline: true }
