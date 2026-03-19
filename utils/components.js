@@ -34,12 +34,6 @@ function buildCreateTaskModal() {
     .setRequired(false)
     .setPlaceholder('high / medium / low');
 
-  const deadlineInput = new TextInputBuilder()
-    .setCustomId('task_deadline')
-    .setStyle(TextInputStyle.Short)
-    .setRequired(false)
-    .setPlaceholder('YYYY-MM-DD');
-
   const departmentSelect = new StringSelectMenuBuilder()
     .setCustomId('department')
     .setPlaceholder('Select a department')
