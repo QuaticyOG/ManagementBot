@@ -75,11 +75,6 @@ function buildCreateTaskModal() {
         .setTextInputComponent(priorityInput),
 
       new LabelBuilder()
-        .setLabel('Deadline')
-        .setDescription('YYYY-MM-DD')
-        .setTextInputComponent(deadlineInput),
-
-      new LabelBuilder()
         .setLabel('Department')
         .setDescription('Choose the task owner department')
         .setStringSelectMenuComponent(departmentSelect),
