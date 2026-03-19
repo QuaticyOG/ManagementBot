@@ -31,8 +31,7 @@ async function createTask({
       department,
       sourceDepartment,
       assignedUserId,
-      priority,
-      deadline
+      priority
     ]
   );
 
