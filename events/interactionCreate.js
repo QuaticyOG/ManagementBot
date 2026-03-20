@@ -158,9 +158,8 @@ module.exports = {
 
         await updateDashboard(client);
 
-        return interaction.reply({
+        return interaction.editReply({
           embeds: [buildInfoEmbed('Task created', `Task **#${task.id} — ${task.title}** created.`)],
-          ephemeral: true,
         });
       }
 
@@ -190,9 +189,8 @@ module.exports = {
         }
 
         if (!canViewDepartment(interaction.member, task.department)) {
-          return interaction.reply({
-            embeds: [buildInfoEmbed('Access denied', 'You cannot access this task.', 0xed4245)],
-            ephemeral: true,
+            return interaction.editReply({
+            embeds: [buildInfoEmbed('Access denied', ...)],
           });
         }
 
