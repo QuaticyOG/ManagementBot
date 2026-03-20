@@ -189,8 +189,9 @@ module.exports = {
         }
 
         if (!canViewDepartment(interaction.member, task.department)) {
-            return interaction.editReply({
-            embeds: [buildInfoEmbed('Access denied', ...)],
+          return interaction.reply({
+            embeds: [buildInfoEmbed('Access denied', 'You cannot access this task.', 0xed4245)],
+            flags: 64,
           });
         }
 
