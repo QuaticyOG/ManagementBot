@@ -87,9 +87,9 @@ node index.js
 - Backend
 - Design
 - Marketing
-- Admin
 - Project Manager
 - Head of X (treated as Management)
+- Admin
 
 ## Commands
 
