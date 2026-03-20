@@ -73,7 +73,7 @@ function startGitHubWebhookServer(client) {
       const repoName = payload.repository?.name?.toLowerCase();
 
 // FRONTEND REPO
-if (repoName === 'frontend-repo-name') {
+if (repoName === 'frontend') {
 
   if (event === 'push') {
     const ch = await client.channels.fetch(process.env.GITHUB_FRONTEND_PUSH_CHANNEL_ID);
@@ -91,7 +91,7 @@ if (repoName === 'frontend-repo-name') {
 }
 
 // BACKEND REPO
-if (repoName === 'backend-repo-name') {
+if (repoName === 'backend') {
 
   if (event === 'push') {
     const ch = await client.channels.fetch(process.env.GITHUB_BACKEND_PUSH_CHANNEL_ID);
