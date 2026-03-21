@@ -12,6 +12,10 @@ const required = [
   'DESIGN_TASK_CHANNEL_ID',
   'MARKETING_TASK_CHANNEL_ID',
   'PROJECT_DASHBOARD_CHANNEL_ID',
+  'WORKERS_TASK_CHANNEL_ID',
+  'PACKS_TASK_CHANNEL_ID',
+  'BUGTESTER_TASK_CHANNEL_ID',
+  'PROJECT_DASHBOARD_CHANNEL_ID',
 ];
 
 const missing = required.filter((key) => !process.env[key]);
