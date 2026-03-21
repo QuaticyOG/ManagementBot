@@ -7,7 +7,7 @@ async function getBoardLists() {
     params: {
       key: process.env.TRELLO_KEY,
       token: process.env.TRELLO_TOKEN,
-      cards: 'open',
+      cards: 'all',
       card_fields: 'name'
     }
   });
