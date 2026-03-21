@@ -1,5 +1,14 @@
 const { EmbedBuilder } = require('discord.js');
 const { DEPARTMENTS, TASK_STATUSES } = require('../config/departments');
+const departmentColors = {
+  frontend: 0x3498db,
+  backend: 0x2ecc71,
+  design: 0xe84393,
+  marketing: 0xf39c12,
+  workers: 0xf1c40f,
+  packs: 0x9b59b6,
+  bugtester: 0xe74c3c,
+};
 
 function formatTimestamp(value) {
   if (!value) return 'None';
@@ -32,17 +41,17 @@ function formatSource(source) {
 
   if (source === 'management') return '👔 Management';
 
-  return DEPARTMENTS[source]?.label ?? source;
+  return DEPARTMENTS[source]?.roleName ?? source;
 }
 
 function buildTaskEmbed(task) {
   const department = DEPARTMENTS[task.department];
 
   return new EmbedBuilder()
-    .setColor(department.color)
+    .setColor(departmentColors[task.department] || 0x5865f2)
     .setTitle(`Task #${task.id} — ${task.title}`)
     .addFields(
-      { name: 'Department', value: department.label, inline: true },
+      { name: 'Department', value: department.roleName, inline: true },
       { name: 'From', value: formatSource(task.source_department), inline: true },
       { name: 'Priority', value: formatPriority(task.priority), inline: true },
 
@@ -59,11 +68,11 @@ function buildTaskDetailsEmbed(task) {
   const department = DEPARTMENTS[task.department];
 
   return new EmbedBuilder()
-    .setColor(department.color)
+    .setColor(departmentColors[task.department] || 0x5865f2)
     .setTitle(`Task #${task.id} — ${task.title}`)
     .setDescription(task.description)
     .addFields(
-      { name: 'Department', value: department.label, inline: true },
+      { name: 'Department', value: department.roleName, inline: true },
       { name: 'From', value: formatSource(task.source_department), inline: true },
       { name: 'Priority', value: formatPriority(task.priority), inline: true },
 
@@ -91,7 +100,7 @@ function buildTaskListEmbed({ title, tasks, requestingUserId }) {
     const assigned = formatAssigned(task.assigned_user_id);
 
     return `**#${task.id} — ${task.title}**
-${department.label} • ${TASK_STATUSES[task.status]} • ${assigned}${assignedMarker}`;
+${department.roleName} • ${TASK_STATUSES[task.status]} • ${assigned}${assignedMarker}`;
   });
 
   return embed.setDescription(lines.join('\n\n'));
