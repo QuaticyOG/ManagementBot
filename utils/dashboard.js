@@ -31,7 +31,7 @@ function buildDashboardEmbed(summaryRows, topContributors) {
     const progressBar = buildProgressBar(summary.completed_count, total);
 
     return {
-      name: `${department.label}`,
+      name: `${department.roleName}`,
       value:
 `🟡 Todo: ${summary.todo_count}
 🔵 In Progress: ${summary.in_progress_count}
@@ -81,12 +81,7 @@ ${progressBar}`,
       inline: false,
     })
 
-    .addFields(
-      departments[0],
-      departments[1],
-      departments[2],
-      departments[3]
-    )
+    .addFields(...departments)
 
     .addFields({
       name: '━━━━━━━━━━━━━━━━',
