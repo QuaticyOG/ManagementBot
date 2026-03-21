@@ -31,7 +31,7 @@ const DEPARTMENTS = {
   },
 };
 
-const MANAGER_ROLES = ['Admin', 'Project Manager'];
+const MANAGER_ROLES = ['Owner', 'Admin', 'Project Manager'];
 const CREATOR_ROLES = [...MANAGER_ROLES, ...Object.values(DEPARTMENTS).map((d) => d.roleName)];
 const TASK_STATUSES = {
   todo: 'Todo',
