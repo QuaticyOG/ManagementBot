@@ -42,7 +42,7 @@ function buildCreateTaskModal() {
     .setMaxValues(1)
     .addOptions(
       ...Object.values(DEPARTMENTS).map((department) => ({
-        label: department.label,
+        label: department.roleName,
         value: department.key,
       }))
     );
