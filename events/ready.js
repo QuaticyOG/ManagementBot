@@ -1,4 +1,5 @@
 const { Events, REST, Routes } = require('discord.js');
+const { updateCalendar } = require('../utils/contentCalendar');
 const { updateDashboard } = require('../utils/dashboard');
 const { query } = require('../database/db');
 const { startGitHubWebhookServer } = require('../utils/githubWebhook');
@@ -40,6 +41,13 @@ module.exports = {
 
     await updateDashboard(client);
     console.log('Dashboard initialized.');
+
+    await updateCalendar(client);
+    console.log('Calendar initialized.');
+    
+    setInterval(() => {
+      updateCalendar(client);
+    }, 60000); // every 60s
 
     startGitHubWebhookServer(client);
     console.log('GitHub webhook initialized.');
