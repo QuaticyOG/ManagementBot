@@ -1,6 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 const { getBoardLists } = require('./trelloCalendar');
 const { getState, setState } = require('../database/state');
+console.log('Updating calendar...');
 
 function buildEmbed(lists) {
   const embed = new EmbedBuilder()
