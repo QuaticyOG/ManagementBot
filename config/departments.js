@@ -4,30 +4,38 @@ const DEPARTMENTS = {
   frontend: {
     key: 'frontend',
     roleName: 'Frontend',
+    envKey: 'FRONTEND_TASK_CHANNEL_ID',
   },
   backend: {
     key: 'backend',
     roleName: 'Backend',
+    envKey: 'BACKEND_TASK_CHANNEL_ID',
   },
   design: {
     key: 'design',
     roleName: 'Design',
+    envKey: 'DESIGN_TASK_CHANNEL_ID',
   },
   marketing: {
     key: 'marketing',
     roleName: 'Marketing',
+    envKey: 'MARKETING_TASK_CHANNEL_ID',
   },
+
   workers: {
     key: 'workers',
     roleName: 'Workers',
+    envKey: 'WORKERS_TASK_CHANNEL_ID',
   },
-  packs: { 
+  packs: {
     key: 'packs',
     roleName: 'Packs',
+    envKey: 'PACKS_TASK_CHANNEL_ID',
   },
   bugtester: {
     key: 'bugtester',
     roleName: 'Bug Tester',
+    envKey: 'BUGTESTER_TASK_CHANNEL_ID',
   },
 };
 
