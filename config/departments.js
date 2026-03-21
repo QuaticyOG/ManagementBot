@@ -3,31 +3,31 @@ const { Colors } = require('discord.js');
 const DEPARTMENTS = {
   frontend: {
     key: 'frontend',
-    label: 'Frontend',
-    envKey: 'FRONTEND_TASK_CHANNEL_ID',
     roleName: 'Frontend',
-    color: Colors.Blue,
   },
   backend: {
     key: 'backend',
-    label: 'Backend',
-    envKey: 'BACKEND_TASK_CHANNEL_ID',
     roleName: 'Backend',
-    color: Colors.Purple,
   },
   design: {
     key: 'design',
-    label: 'Design',
-    envKey: 'DESIGN_TASK_CHANNEL_ID',
     roleName: 'Design',
-    color: Colors.Fuchsia,
   },
   marketing: {
     key: 'marketing',
-    label: 'Marketing',
-    envKey: 'MARKETING_TASK_CHANNEL_ID',
     roleName: 'Marketing',
-    color: Colors.Orange,
+  },
+  workers: {
+    key: 'workers',
+    roleName: 'Workers',
+  },
+  packs: { 
+    key: 'packs',
+    roleName: 'Packs',
+  },
+  bugtester: {
+    key: 'bugtester',
+    roleName: 'Bug Tester',
   },
 };
 
