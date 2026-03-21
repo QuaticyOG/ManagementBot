@@ -18,20 +18,30 @@ function verifyGitHubSignature(req, secret) {
 }
 
 function buildPushEmbed(payload) {
-  const commits = payload.commits.slice(0, 5);
+  const commits = payload.commits?.slice(0, 5) || [];
+
+  const description = commits.length
+    ? commits.map(c =>
+        `• **${c.message || 'No message'}**\nby \`${c.author?.name || 'Unknown'}\``
+      ).join('\n\n')
+    : 'No commits in this push.';
 
   return new EmbedBuilder()
     .setColor(0x5865f2)
     .setTitle(`📦 Push — ${payload.repository.name}`)
     .setURL(payload.compare)
-    .setDescription(
-      commits.map(c =>
-        `• **${c.message}**\nby \`${c.author.name}\``
-      ).join('\n\n')
-    )
+    .setDescription(description) // ✅ FIXED
     .addFields(
-      { name: 'Branch', value: payload.ref.replace('refs/heads/', ''), inline: true },
-      { name: 'Commits', value: String(payload.commits.length), inline: true }
+      {
+        name: 'Branch',
+        value: payload.ref?.replace('refs/heads/', '') || 'unknown',
+        inline: true
+      },
+      {
+        name: 'Commits',
+        value: String(payload.commits?.length || 0),
+        inline: true
+      }
     )
     .setTimestamp();
 }
@@ -43,7 +53,7 @@ function buildPREmbed(payload) {
     .setColor(0x57f287)
     .setTitle(`🔀 PR — ${pr.title}`)
     .setURL(pr.html_url)
-    .setDescription(pr.body || 'No description')
+    .setDescription(pr.body?.trim() ? pr.body : 'No description')
     .addFields(
       { name: 'Author', value: pr.user.login, inline: true },
       { name: 'Status', value: pr.state, inline: true }
