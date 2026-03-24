@@ -49,11 +49,15 @@ function buildPushEmbed(payload) {
 function buildPREmbed(payload) {
   const pr = payload.pull_request;
 
+  const description = pr.body
+    ? pr.body.slice(0, 4000) + (pr.body.length > 4000 ? '\n\n... (truncated)' : '')
+    : 'No description';
+
   return new EmbedBuilder()
     .setColor(0x57f287)
     .setTitle(`🔀 PR — ${pr.title}`)
     .setURL(pr.html_url)
-    .setDescription(pr.body?.trim() ? pr.body : 'No description')
+    .setDescription(description)
     .addFields(
       { name: 'Author', value: pr.user.login, inline: true },
       { name: 'Status', value: pr.state, inline: true }
