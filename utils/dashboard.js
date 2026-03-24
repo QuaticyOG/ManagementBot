@@ -44,9 +44,9 @@ ${progressBar}`,
 
   const totals = summaryRows.reduce(
     (acc, row) => {
-      acc.todo += row.todo_count;
-      acc.progress += row.in_progress_count;
-      acc.completed += row.completed_count;
+      acc.todo += Number(row.todo_count);
+      acc.progress += Number(row.in_progress_count);
+      acc.completed += Number(row.completed_count);
       return acc;
     },
     { todo: 0, progress: 0, completed: 0 }
